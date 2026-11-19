@@ -95,7 +95,7 @@ export default function AppointmentDetail({ appt, onClose }: { appt: Appointment
           )
         ) : (
           <button className="btn btn--ghost" onClick={() => set('confirmada')}>
-            Volver a "Confirmada"
+            Volver a &quot;Confirmada&quot;
           </button>
         )}
       </div>

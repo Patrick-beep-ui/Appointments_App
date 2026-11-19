@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { CalendarCheck, MapPin, Sparkles } from 'lucide-react';
 import { ARTISTS, SALON } from '../lib/config';
 
@@ -42,7 +43,7 @@ export default function Home() {
 
           <div className="arch">
             {/* Imagen provisional recortada de la captura: reemplazar por la original en alta resolución */}
-            <img src="/images/hero-salon.jpg" alt="Interior del salón: sillón crema frente a un espejo redondo iluminado" />
+            <Image src="/images/hero-salon.jpg" width={930} height={1166} unoptimized alt="Interior del salón: sillón crema frente a un espejo redondo iluminado" />
           </div>
         </div>
       </section>

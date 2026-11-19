@@ -10,7 +10,7 @@
  * vivir también en la base de datos (restricción o transacción), no solo
  * en el navegador.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import { ARTISTS, WEEKDAYS } from './config';
 
 // ---------- Tipos ----------
@@ -111,14 +111,24 @@ const PREFIX = 'velore:';
 
 export function read<T>(key: string, fallback: T): T {
   try {
-    const raw = localStorage.getItem(PREFIX + key);
+    const raw = readRaw(key);
     return raw ? (JSON.parse(raw) as T) : fallback;
   } catch {
     return fallback;
   }
 }
 
+function readRaw(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage.getItem(PREFIX + key);
+  } catch {
+    return null;
+  }
+}
+
 export function write<T>(key: string, value: T) {
+  if (typeof window === 'undefined') return;
   try {
     localStorage.setItem(PREFIX + key, JSON.stringify(value));
   } catch {
@@ -128,6 +138,7 @@ export function write<T>(key: string, value: T) {
 }
 
 export function clearAll() {
+  if (typeof window === 'undefined') return;
   Object.keys(localStorage)
     .filter((k) => k.startsWith(PREFIX) && !k.endsWith('session') && !k.endsWith('ownerEmail'))
     .forEach((k) => localStorage.removeItem(k));
@@ -149,15 +160,20 @@ function subscribe(fn: (key: string) => void) {
 
 /** Hook reactivo: se actualiza cuando cualquier pantalla cambia ese dato. */
 export function useStored<T>(key: string, fallback: T) {
-  const [value, setValue] = useState<T>(() => read(key, fallback));
-  useEffect(
-    () =>
-      subscribe((k) => {
-        if (k === key || k === '*') setValue(read(key, fallback));
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  const onChange = useCallback(
+    (notify: () => void) => subscribe((changedKey) => {
+      if (changedKey === key || changedKey === '*') notify();
+    }),
     [key],
   );
+  // The raw string is a stable snapshot; parsing inside getSnapshot would
+  // allocate a new object on every call and cause an infinite render loop.
+  const getSnapshot = useCallback(() => readRaw(key), [key]);
+  const raw = useSyncExternalStore(onChange, getSnapshot, () => null);
+  const value = useMemo<T>(() => {
+    if (raw === null) return fallback;
+    try { return JSON.parse(raw) as T; } catch { return fallback; }
+  }, [raw, fallback]);
   const save = useCallback((v: T) => write(key, v), [key]);
   return [value, save] as const;
 }

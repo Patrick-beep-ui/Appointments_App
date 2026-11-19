@@ -17,7 +17,7 @@ export default function Horarios() {
           <h1>Horario de trabajo</h1>
           <p className="page-sub">
             Las clientas solo podrán reservar dentro de estos horarios. Para almuerzos o días libres, usa
-            "Bloquear horario" en la Agenda.
+            &quot;Bloquear horario&quot; en la Agenda.
           </p>
         </div>
       </div>
