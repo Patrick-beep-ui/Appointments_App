@@ -1,5 +1,5 @@
 /**
- * Datos de ejemplo SOLO para desarrollo (botón visible en `npm run dev`).
+ * Datos de ejemplo SOLO para desarrollo (botón visible en `pnpm dev`).
  * Los precios son inventados.
  */
 import { createAppointment, addBlock, addRequest } from './actions';
