@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { CalendarCheck, MapPin, Sparkles } from 'lucide-react';
 import { ARTISTS, SALON } from '../lib/config';
 
@@ -35,7 +35,7 @@ export default function Home() {
             <p className="hero-lead">
               Reserva tu cita en menos de un minuto. Elige servicio, artista y hora, y listo.
             </p>
-            <Link to="/reservar" className="btn-cta">
+            <Link href="/reservar" className="btn-cta">
               Reservar cita
             </Link>
           </div>
@@ -70,7 +70,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <Link to="/reservar" className="btn-cta">
+          <Link href="/reservar" className="btn-cta">
             Reservar ahora
           </Link>
         </div>

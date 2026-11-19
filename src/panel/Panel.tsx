@@ -1,7 +1,9 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { LogIn, LogOut } from 'lucide-react';
-import { Logo } from '../components/SiteLayout';
+import { Logo } from '../components/Logo';
 import { CustomRequest, KEYS, Session, useStored } from '../lib/store';
 import { loadDemo, resetData } from '../lib/demo';
 import Agenda from './Agenda';
@@ -62,7 +64,7 @@ export default function Panel() {
     <>
       <header className="panel-header">
         <div className="container">
-          <Link to="/" aria-label="Ir al sitio público">
+          <Link href="/" aria-label="Ir al sitio público">
             <Logo suffix="Panel" />
           </Link>
           {session ? (

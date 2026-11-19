@@ -1,5 +1,7 @@
+'use client';
+
 import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { SelectField } from '../components/Fields';
 import { ARTISTS, SALON } from '../lib/config';
@@ -409,7 +411,7 @@ function Confirmation({ appt, onAgain }: { appt: Appointment; onAgain: () => voi
             <button className="btn-cta" onClick={onAgain}>
               Reservar otra cita
             </button>
-            <Link to="/" className="btn-cta btn-cta--ghost">
+            <Link href="/" className="btn-cta btn-cta--ghost">
               Volver al inicio
             </Link>
           </div>
