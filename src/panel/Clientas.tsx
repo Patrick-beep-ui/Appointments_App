@@ -61,7 +61,7 @@ export default function Clientas() {
         </div>
       ) : rows.length === 0 ? (
         <p className="muted" style={{ fontSize: 14 }}>
-          No se encontró ninguna clienta con "{q}".
+          No se encontró ninguna clienta con &quot;{q}&quot;.
         </p>
       ) : (
         <div className="card">

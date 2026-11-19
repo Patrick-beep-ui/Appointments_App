@@ -4,4 +4,11 @@ dist
 *.log
 
 # Environment files
-.env
+.env*
+!.env.example
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+playwright-report/
+test-results/

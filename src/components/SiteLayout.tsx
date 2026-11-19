@@ -1,33 +1,23 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import type { ReactNode } from 'react';
+import Link from 'next/link';
 import { SALON } from '../lib/config';
+import { Logo } from './Logo';
+import PublicNav from './PublicNav';
 
-export function Logo({ suffix = 'Salon' }: { suffix?: string }) {
-  return (
-    <span className="logo">
-      {SALON.name} <em>{suffix}</em>
-    </span>
-  );
-}
-
-export default function SiteLayout() {
+export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <header className="site-header">
         <div className="container">
-          <Link to="/" aria-label="Velore Salon, inicio">
+          <Link href="/" aria-label="Velore Salon, inicio">
             <Logo />
           </Link>
-          <nav className="site-nav">
-            <NavLink to="/" end>
-              Inicio
-            </NavLink>
-            <NavLink to="/reservar">Reservar</NavLink>
-          </nav>
+          <PublicNav />
         </div>
       </header>
 
       <main className="site-main">
-        <Outlet />
+        {children}
       </main>
 
       <footer className="site-footer">
@@ -35,7 +25,7 @@ export default function SiteLayout() {
           <span>
             © {SALON.year} {SALON.name} Salon · {SALON.location}
           </span>
-          <Link to="/panel">Acceso del salón</Link>
+          <Link href="/panel">Acceso del salón</Link>
         </div>
       </footer>
     </>

@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+'use client';
+
+import { useSyncExternalStore } from 'react';
+import Link from 'next/link';
 import { LogIn, LogOut } from 'lucide-react';
-import { Logo } from '../components/SiteLayout';
+import { Logo } from '../components/Logo';
 import { CustomRequest, KEYS, Session, useStored } from '../lib/store';
 import { loadDemo, resetData } from '../lib/demo';
+import { useHydrated } from '../lib/browser';
 import Agenda from './Agenda';
 import Solicitudes from './Solicitudes';
 import Servicios from './Servicios';
@@ -25,6 +28,16 @@ const tabFromHash = (): TabId => {
   return (TABS.find((t) => t.id === h)?.id ?? 'agenda') as TabId;
 };
 
+const subscribeHash = (notify: () => void) => {
+  window.addEventListener('hashchange', notify);
+  window.addEventListener('popstate', notify);
+  return () => {
+    window.removeEventListener('hashchange', notify);
+    window.removeEventListener('popstate', notify);
+  };
+};
+const serverTab = (): TabId => 'agenda';
+
 /**
  * Flujo de acceso (provisional, sin backend):
  * 1. Sin sesión → "Acceso del salón" + Iniciar sesión.
@@ -35,20 +48,15 @@ const tabFromHash = (): TabId => {
  * (p. ej. Google o correo + enlace mágico).
  */
 export default function Panel() {
+  const hydrated = useHydrated();
   const [session, setSession] = useStored<Session>(KEYS.session, null);
   const [ownerEmail, setOwnerEmail] = useStored<string | null>(KEYS.ownerEmail, null);
   const [requests] = useStored<CustomRequest[]>(KEYS.requests, []);
-  const [tab, setTabState] = useState<TabId>(tabFromHash);
-
-  useEffect(() => {
-    const onHash = () => setTabState(tabFromHash());
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
-  }, []);
+  const tab = useSyncExternalStore(subscribeHash, tabFromHash, serverTab);
 
   const setTab = (id: TabId) => {
-    history.replaceState(null, '', `#${id}`);
-    setTabState(id);
+    window.history.replaceState(window.history.state, '', `#${id}`);
+    window.dispatchEvent(new HashChangeEvent('hashchange'));
   };
 
   const login = () => setSession({ email: 'duena@velore.local' });
@@ -58,11 +66,15 @@ export default function Panel() {
   const pendingCount = requests.filter((r) => r.status === 'pendiente').length;
   const Current = TABS.find((t) => t.id === tab)!.Comp;
 
+  if (!hydrated) {
+    return <main className="panel-center container" aria-busy="true"><p role="status">Cargando panel…</p></main>;
+  }
+
   return (
     <>
       <header className="panel-header">
         <div className="container">
-          <Link to="/" aria-label="Ir al sitio público">
+          <Link href="/" aria-label="Ir al sitio público">
             <Logo suffix="Panel" />
           </Link>
           {session ? (
@@ -131,7 +143,7 @@ export default function Panel() {
             </div>
           </main>
 
-          {import.meta.env.DEV && (
+          {process.env.NODE_ENV === 'development' && (
             <div className="dev-bar container">
               Solo en desarrollo:
               <button className="btn btn--link" onClick={loadDemo}>

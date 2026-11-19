@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
+import Image from 'next/image';
 import { CalendarCheck, MapPin, Sparkles } from 'lucide-react';
 import { ARTISTS, SALON } from '../lib/config';
 
@@ -35,14 +36,14 @@ export default function Home() {
             <p className="hero-lead">
               Reserva tu cita en menos de un minuto. Elige servicio, artista y hora, y listo.
             </p>
-            <Link to="/reservar" className="btn-cta">
+            <Link href="/reservar" className="btn-cta">
               Reservar cita
             </Link>
           </div>
 
           <div className="arch">
             {/* Imagen provisional recortada de la captura: reemplazar por la original en alta resolución */}
-            <img src="/images/hero-salon.jpg" alt="Interior del salón: sillón crema frente a un espejo redondo iluminado" />
+            <Image src="/images/hero-salon.jpg" width={930} height={1166} unoptimized alt="Interior del salón: sillón crema frente a un espejo redondo iluminado" />
           </div>
         </div>
       </section>
@@ -70,7 +71,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <Link to="/reservar" className="btn-cta">
+          <Link href="/reservar" className="btn-cta">
             Reservar ahora
           </Link>
         </div>

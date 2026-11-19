@@ -1,5 +1,7 @@
+'use client';
+
 import { FormEvent, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Check } from 'lucide-react';
 import { SelectField } from '../components/Fields';
 import { ARTISTS, SALON } from '../lib/config';
@@ -43,18 +45,22 @@ export default function Booking() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [service?.id, service?.durationMin, artistPref, version]);
 
-  const daySlots = days.find((d) => d.iso === date)?.slots ?? [];
+  const daySlots = useMemo(() => days.find((d) => d.iso === date)?.slots ?? [], [days, date]);
   const noDays = days.length > 0 && days.every((d) => d.slots.length === 0);
 
   // Elegir automáticamente el primer día con espacio (menos toques)
   useEffect(() => {
     if (days.length && (!date || !days.some((d) => d.iso === date))) {
+      // Preserve the prototype's automatic date selection after storage changes.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDate(days.find((d) => d.slots.length)?.iso ?? null);
     }
   }, [days, date]);
 
   // Si la hora elegida se ocupó mientras tanto, se quita
   useEffect(() => {
+    // Preserve clearing a selected time when another tab occupies it.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (slot && !daySlots.some((s) => s.start === slot.start)) setSlot(null);
   }, [daySlots, slot]);
 
@@ -409,7 +415,7 @@ function Confirmation({ appt, onAgain }: { appt: Appointment; onAgain: () => voi
             <button className="btn-cta" onClick={onAgain}>
               Reservar otra cita
             </button>
-            <Link to="/" className="btn-cta btn-cta--ghost">
+            <Link href="/" className="btn-cta btn-cta--ghost">
               Volver al inicio
             </Link>
           </div>
