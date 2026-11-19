@@ -24,7 +24,7 @@ export default defineConfig({
     { name: 'mobile', use: { browserName: 'chromium', viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
   ],
   webServer: {
-    command: 'npm run build && npm run start -- --hostname 127.0.0.1 --port 3000',
+    command: 'pnpm build && pnpm start --hostname 127.0.0.1 --port 3000',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: false,
     timeout: 120_000,

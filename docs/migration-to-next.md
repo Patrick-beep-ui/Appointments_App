@@ -55,10 +55,10 @@ rutas públicas y su comportamiento responsive.
 
 | Control ejecutado | Resultado |
 | --- | --- |
-| `npm run lint` | Pasa, sin errores ni warnings. |
-| `npm run typecheck` | Pasa, incluidos configuración y tests E2E. |
+| `pnpm lint` | Pasa, sin errores ni warnings. |
+| `pnpm typecheck` | Pasa, incluidos configuración y tests E2E. |
 | `next build` | Pasa; `/`, `/reservar` y `/panel` prerenderizan sin acceso al DOM en servidor. |
-| `npm run test:e2e` | 14 pruebas pasan contra build + servidor de producción. |
+| `pnpm test:e2e` | 14 pruebas pasan contra build + servidor de producción. |
 | Navegación y refresh | Enlaces activos, back, entrada directa y fallback a inicio conservados. |
 | Dueña → servicio → reserva → clienta | Validación de campos, confirmación, persistencia y horario ocupado comprobados. |
 | Solicitud personalizada → panel | Comprobada tras navegación y refresh. |
@@ -88,7 +88,7 @@ cambios de entidades HTML de tres textos no alteran su presentación.
 
 ### Detalles del destino
 
-- Next.js `16.4.6`, React/React DOM `19.3.1`; dependencias reproducibles en npm.
+- Next.js `16.4.6`, React/React DOM `19.3.1`; dependencias reproducibles con pnpm y `pnpm-lock.yaml`.
 - La carpeta `src/pages` se renombró a `src/views` para no crear accidentalmente
   rutas del Pages Router al conservar los componentes de vista.
 - `useSyncExternalStore` utiliza un snapshot de servidor estable y strings de
@@ -104,7 +104,15 @@ cambios de entidades HTML de tres textos no alteran su presentación.
 El resultado sigue siendo una demo local: esta PR no implementa backend,
 autenticación real, sincronización entre dispositivos ni despliegue productivo.
 
-## Reversión
+## Gestor de paquetes
+
+El proyecto usa pnpm `10.34.9`, fijado en `packageManager`. El lockfile original
+se convierte con `pnpm import` antes de retirar `package-lock.json`. Local y CI
+usan `pnpm install --frozen-lockfile`; los tests arrancan Next con pnpm.
+`pnpm-workspace.yaml` permite únicamente los instaladores nativos de `sharp`
+y `unrs-resolver`. El cambio no requiere modificar la versión mínima de Node.
+
+## Reversión del framework
 
 Antes de mergear, cerrar la PR deja `main` intacta. Después de mergear, revertir
 la PR y desplegar el artefacto anterior. No hay cambios de esquema ni datos

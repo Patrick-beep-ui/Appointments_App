@@ -4,11 +4,15 @@ Sitio de citas para **Velore Salon** (Diriamba, Carazo). Vista de la clienta + p
 
 ## Cómo correrlo
 
+El proyecto usa **pnpm 10.34.9**, fijado en `packageManager`. Si aún no lo tenés,
+instalalo una vez con `npm install --global pnpm@10.34.9` (o activá Corepack si
+ya está instalado). Usá `pnpm-lock.yaml` como único lockfile del proyecto.
+
 Requiere Node **20.9 o superior**; desarrollo y CI usan Node 24 (`.nvmrc`).
 
 ```bash
-npm ci
-npm run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 Abre http://localhost:3000
@@ -16,11 +20,11 @@ Abre http://localhost:3000
 Para compilar y ejecutar el resultado de producción:
 
 ```bash
-npm run build
-npm start
+pnpm build
+pnpm start
 ```
 
-`npm run preview` también ejecuta el servidor de producción, después de compilar.
+`pnpm preview` también ejecuta el servidor de producción, después de compilar.
 
 | Ruta         | Vista                                   |
 | ------------ | --------------------------------------- |
@@ -29,7 +33,7 @@ npm start
 | `/panel`     | Panel de la dueña                       |
 
 **Para probar rápido:** entra a `/panel`, inicia sesión (simulado), toca "Soy la dueña" y abajo
-usa **"Cargar datos de ejemplo"** (solo aparece en `npm run dev`). Carga servicios, citas,
+usa **"Cargar datos de ejemplo"** (solo aparece en `pnpm dev`). Carga servicios, citas,
 bloqueos y una solicitud con precios inventados.
 
 ## Stack
@@ -64,10 +68,10 @@ tests/e2e/             Pruebas de flujos en Chromium móvil y escritorio
 ## Verificación y migración
 
 ```bash
-npm run lint
-npm run typecheck
-npx playwright install chromium
-npm run test:e2e
+pnpm lint
+pnpm typecheck
+pnpm exec playwright install chromium
+pnpm test:e2e
 ```
 
 Las pruebas levantan un **build de producción** y usan datos aislados de prueba.

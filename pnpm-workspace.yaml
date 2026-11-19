@@ -1,0 +1,4 @@
+# Only these native dependency installers may run during pnpm installation.
+onlyBuiltDependencies:
+  - sharp
+  - unrs-resolver
