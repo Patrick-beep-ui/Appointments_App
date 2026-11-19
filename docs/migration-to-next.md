@@ -53,9 +53,56 @@ rutas públicas y su comportamiento responsive.
 
 ## Validación final
 
-Pendiente durante la implementación. Se registrarán aquí los comandos y los
-flujos verificados, incluidos build y servidor de producción, persistencia,
-hashes, modales, consola y controles de desarrollo.
+| Control ejecutado | Resultado |
+| --- | --- |
+| `npm run lint` | Pasa, sin errores ni warnings. |
+| `npm run typecheck` | Pasa, incluidos configuración y tests E2E. |
+| `next build` | Pasa; `/`, `/reservar` y `/panel` prerenderizan sin acceso al DOM en servidor. |
+| `npm run test:e2e` | 14 pruebas pasan contra build + servidor de producción. |
+| Navegación y refresh | Enlaces activos, back, entrada directa y fallback a inicio conservados. |
+| Dueña → servicio → reserva → clienta | Validación de campos, confirmación, persistencia y horario ocupado comprobados. |
+| Solicitud personalizada → panel | Comprobada tras navegación y refresh. |
+| Sesión guardada, hashes y modales | Deep links, cambio de hash, cierre con Escape, foco y scroll del body comprobados. |
+| Storage | Cambios de catálogo entre pestañas y JSON inválido comprobados. |
+| Producción | Botones de cargar/borrar datos de desarrollo ausentes. |
+| Consola | Sin errores de ejecución o hidratación detectados por los flujos E2E. |
+| Comparación visual | 8 pares de capturas idénticos píxel a píxel en el entorno de prueba. |
+
+La comparación visual se realizó contra `dist` generado por el build Vite
+original antes de modificar el código. Se compararon inicio, catálogo de
+reservas, agenda y servicios del panel a 1280 y 390 px, con iguales fixtures,
+fecha/hora y zona `America/Managua`. No prueba todas las pantallas ni otros
+navegadores. Los tests usan Chromium y contextos aislados; no envían mensajes
+reales ni modifican datos de usuarios.
+
+En este entorno el Chromium del sistema no pudo arrancar por restricciones de
+sockets. Las pruebas se ejecutaron con Chrome Headless Shell instalado desde
+un paquete de npm y `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/tmp/chromium`.
+Ese ejecutable y sus dependencias temporales no forman parte de la aplicación.
+CI instala el Chromium estándar mediante Playwright.
+
+Se conservaron dos efectos puntuales de Booking que seleccionan automáticamente
+el día e invalidan una hora ocupada; sus excepciones de lint están documentadas
+en esas líneas, sin desactivar reglas globales ni controles de TypeScript. Los
+cambios de entidades HTML de tres textos no alteran su presentación.
+
+### Detalles del destino
+
+- Next.js `16.4.6`, React/React DOM `19.3.1`; dependencias reproducibles en npm.
+- La carpeta `src/pages` se renombró a `src/views` para no crear accidentalmente
+  rutas del Pages Router al conservar los componentes de vista.
+- `useSyncExternalStore` utiliza un snapshot de servidor estable y strings de
+  storage para evitar discrepancias de hidratación y snapshots de objeto inestables.
+- El panel espera la hidratación antes de presentar su sesión local y agenda.
+- Los cambios de hash preservan el estado de navegación de Next.
+- Los portales solo acceden a `document.body` después del montaje.
+- La imagen usa sus dimensiones originales y conserva la URL pública sin
+  optimización remota; la comparación visual confirma el mismo recorte.
+- No hay runtime Vite, React Router, `import.meta.env`, catch-all SPA ni
+  `ignoreBuildErrors` en el destino.
+
+El resultado sigue siendo una demo local: esta PR no implementa backend,
+autenticación real, sincronización entre dispositivos ni despliegue productivo.
 
 ## Reversión
 
